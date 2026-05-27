@@ -9,22 +9,19 @@
 </head>
 <body>
 
-<!-- IMAGE FULLSCREEN -->
 <div class="img-fs hidden" id="imgFS">
   <button class="img-fs-close" onclick="document.getElementById('imgFS').classList.add('hidden')">×</button>
   <img id="imgFSSrc" src="" alt="">
 </div>
 
-<!-- ════════════════════════════
-     AUTH SCREEN
-════════════════════════════ -->
+<!-- AUTH SCREEN -->
 <div class="screen" id="authScreen">
   <div class="auth-art"></div>
 
-  <!-- TOP BAR: Lang + Theme -->
+  <!-- Top bar -->
   <div class="auth-top-bar">
     <div class="lang-select-wrap">
-      <select class="lang-select" id="langSelectAuth" onchange="setLang(this.value)">
+      <select class="lang-select" id="langSel" onchange="setLang(this.value)">
         <option value="en">🌐 English</option>
         <option value="ar">🌐 العربية</option>
         <option value="fr">🌐 Français</option>
@@ -41,187 +38,175 @@
         <option value="fa">🌐 فارسی</option>
       </select>
     </div>
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Dark/Light mode">☀️</button>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">☀️</button>
   </div>
 
   <div class="auth-brand">
     <div class="auth-logo">Flow</div>
-    <div class="auth-tag" id="authTag">Connect. Share. Grow.</div>
+    <div class="auth-tag">Connect. Share. Grow.</div>
   </div>
 
   <div class="auth-card">
+    <!-- Tabs -->
     <div class="auth-tabs">
-      <div class="auth-tab on" id="tLogin" onclick="swAuthTab('login')" id="tLogin">Login</div>
-      <div class="auth-tab" id="tReg" onclick="swAuthTab('reg')">Sign Up</div>
+      <div class="auth-tab on" id="tLogin" onclick="swTab('login')">Login</div>
+      <div class="auth-tab" id="tReg" onclick="swTab('reg')">Sign Up</div>
     </div>
 
-    <!-- ── LOGIN ── -->
+    <!-- LOGIN -->
     <div id="loginForm">
-      <label class="lbl" id="lblLoginEmail">Email</label>
-      <input class="inp" id="lEmail" type="email" placeholder="example@mail.com" autocomplete="email">
-      <label class="lbl" id="lblLoginPass">Password</label>
-      <input class="inp" id="lPass" type="password" placeholder="••••••••" autocomplete="current-password">
-      <button class="btn" id="loginBtn">Login</button>
-      <div class="forgot"><span id="forgotLnk" onclick="openSheet('forgotSheet')">Forgot password?</span></div>
-      <div class="or-div"><span id="orTxt">or</span></div>
-      <button class="btn ghost" id="phoneLoginBtn">📱 <span id="phoneBtnTxt">Continue with Phone</span></button>
+      <label class="lbl">Email</label>
+      <input class="inp" id="lEmail" type="email" placeholder="example@mail.com">
+      <label class="lbl">Password</label>
+      <input class="inp" id="lPass" type="password" placeholder="••••••••">
+      <button class="btn" onclick="doLogin()">Login</button>
+      <div class="forgot"><span onclick="openSheet('forgotSheet')">Forgot password?</span></div>
     </div>
 
-    <!-- ── REGISTER STEP 1 ── -->
-    <div id="regStep1" style="display:none">
+    <!-- STEP 1 -->
+    <div id="step1" style="display:none">
       <div class="step-bar">
-        <div class="step-dot active" id="sd1"></div>
-        <div class="step-dot" id="sd2"></div>
-        <div class="step-dot" id="sd3"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
       </div>
+      <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:18px">Account Info</div>
 
-      <!-- Email or Phone tabs -->
+      <!-- Email or Phone -->
       <div style="display:flex;gap:8px;margin-bottom:14px">
-        <button class="priv-btn on" id="regEmailTab" onclick="swRegContact('email')">📧 Email</button>
-        <button class="priv-btn" id="regPhoneTab" onclick="swRegContact('phone')">📱 Phone</button>
+        <button class="priv-btn on" id="tabEmail" onclick="swContact('email')">📧 Email</button>
+        <button class="priv-btn" id="tabPhone" onclick="swContact('phone')">📱 Phone</button>
       </div>
-
-      <div id="regEmailDiv">
+      <div id="emailDiv">
         <label class="lbl">Email *</label>
-        <input class="inp" id="rEmail" type="email" placeholder="example@mail.com" autocomplete="email">
+        <input class="inp" id="rEmail" type="email" placeholder="example@mail.com">
       </div>
-      <div id="regPhoneDiv" style="display:none">
-        <label class="lbl">Phone Number *</label>
-        <div class="phone-row">
-          <input class="inp phone-code" id="rPhoneCode" placeholder="+1">
+      <div id="phoneDiv" style="display:none">
+        <label class="lbl">Phone *</label>
+        <div style="display:flex;gap:8px">
+          <input class="inp" id="rCode" placeholder="+1" style="width:72px;flex-shrink:0;margin-bottom:0">
           <input class="inp" id="rPhone" type="tel" placeholder="123 456 7890" style="flex:1;margin-bottom:14px">
         </div>
       </div>
 
-      <label class="lbl">Password *</label>
-      <input class="inp" id="rPass" type="password" placeholder="Min 8 chars, letters+numbers+symbols" autocomplete="new-password" oninput="checkPassStrength(this.value)">
-      <div class="pass-strength"><div class="pass-strength-bar" id="passBar"></div></div>
-      <div style="font-size:11px;color:var(--ink3);margin-top:-10px;margin-bottom:14px" id="passHint">Use letters, numbers and symbols</div>
+      <label class="lbl">Password * <span style="font-size:10px;color:var(--ink3);font-weight:400">(letters+numbers+symbols)</span></label>
+      <input class="inp" id="rPass" type="password" placeholder="Min 8 chars" oninput="showPassStr(this.value)">
+      <div class="pass-strength"><div class="pass-bar" id="passBar"></div></div>
+      <div id="passHint" style="font-size:11px;color:var(--ink3);margin-top:2px;margin-bottom:14px">Use letters, numbers and symbols (!@#$...)</div>
 
       <div style="display:flex;gap:8px">
-        <div style="flex:1">
-          <label class="lbl">First Name *</label>
-          <input class="inp" id="rFirstName" placeholder="John">
-        </div>
-        <div style="flex:1">
-          <label class="lbl">Last Name *</label>
-          <input class="inp" id="rLastName" placeholder="Doe">
-        </div>
+        <div style="flex:1"><label class="lbl">First Name *</label><input class="inp" id="rFirst" placeholder="John"></div>
+        <div style="flex:1"><label class="lbl">Last Name *</label><input class="inp" id="rLast" placeholder="Doe"></div>
       </div>
 
-      <label class="lbl">Username</label>
-      <input class="inp" id="rUsername" placeholder="Leave blank to auto-generate">
-      <div style="font-size:11px;color:var(--ink3);margin-top:-10px;margin-bottom:14px">If empty, will use first+last name</div>
+      <label class="lbl">Username <span style="font-size:10px;color:var(--ink3);font-weight:400">(optional)</span></label>
+      <input class="inp" id="rUser" placeholder="Auto-generated if empty">
 
       <label class="lbl">Date of Birth *</label>
-      <div class="date-row">
-        <select class="inp" id="rDobDay" style="flex:1;margin-bottom:14px">
-          <option value="">Day</option>
-        </select>
-        <select class="inp" id="rDobMonth" style="flex:1.4;margin-bottom:14px">
-          <option value="">Month</option>
-        </select>
-        <select class="inp" id="rDobYear" style="flex:1.2;margin-bottom:14px">
-          <option value="">Year</option>
-        </select>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <select class="inp" id="rDay" style="flex:1;margin-bottom:0"><option value="">Day</option></select>
+        <select class="inp" id="rMonth" style="flex:1.5;margin-bottom:0"><option value="">Month</option></select>
+        <select class="inp" id="rYear" style="flex:1.2;margin-bottom:0"><option value="">Year</option></select>
       </div>
 
       <label class="lbl">Gender *</label>
-      <div class="gender-grid">
-        <button class="gender-btn" data-val="male" onclick="selGender(this)" id="gMale">Male</button>
-        <button class="gender-btn" data-val="female" onclick="selGender(this)" id="gFemale">Female</button>
-        <button class="gender-btn" data-val="other" onclick="selGender(this)" id="gOther">Other</button>
+      <div class="gender-grid" style="margin-bottom:18px">
+        <button class="gender-btn" data-val="male" onclick="pickGender(this)">Male</button>
+        <button class="gender-btn" data-val="female" onclick="pickGender(this)">Female</button>
+        <button class="gender-btn" data-val="other" onclick="pickGender(this)">Other</button>
       </div>
 
-      <button class="btn" id="regStep1Btn" onclick="goRegStep2()">Next →</button>
+      <button class="btn" onclick="toStep2()">Next →</button>
     </div>
 
-    <!-- ── REGISTER STEP 2 ── -->
-    <div id="regStep2" style="display:none">
+    <!-- STEP 2 -->
+    <div id="step2" style="display:none">
       <div class="step-bar">
-        <div class="step-dot done" id="sd1b"></div>
-        <div class="step-dot active" id="sd2b"></div>
-        <div class="step-dot" id="sd3b"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
       </div>
+      <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:18px">Your Profile</div>
 
-      <!-- Cover pick -->
-      <label class="lbl">Cover Photo <span style="color:var(--ink4);font-size:10px">(optional)</span></label>
-      <div class="cover-pick" id="regCoverPick" style="margin-bottom:16px">
+      <!-- Cover -->
+      <label class="lbl">Cover Photo <span style="font-size:10px;color:var(--ink3);font-weight:400">(optional)</span></label>
+      <div class="cover-pick" id="coverPick" style="margin-bottom:16px" onclick="document.getElementById('rCoverFI').click()">
         <div class="cover-hint">📷 Add Cover Photo</div>
       </div>
 
-      <!-- Avatar pick -->
-      <label class="lbl">Profile Photo <span style="color:var(--ink4);font-size:10px">(optional)</span></label>
+      <!-- Avatar -->
+      <label class="lbl">Profile Photo <span style="font-size:10px;color:var(--ink3);font-weight:400">(optional)</span></label>
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-        <div class="ava-pick" id="regAvaPick" style="width:64px;height:64px;border-radius:20px;border:none;position:relative">
-          <span id="regAvaInit" style="font-size:26px">😊</span>
-        </div>
-        <button class="btn ghost sm" onclick="document.getElementById('regAvaFI').click()">Choose Photo</button>
+        <div id="avaPick" onclick="document.getElementById('rAvaFI').click()" style="width:64px;height:64px;border-radius:20px;background:var(--a);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;overflow:hidden;flex-shrink:0">😊</div>
+        <button class="btn ghost sm" onclick="document.getElementById('rAvaFI').click()">Choose Photo</button>
       </div>
 
-      <label class="lbl">Bio <span style="color:var(--ink4);font-size:10px">(optional)</span></label>
+      <label class="lbl">Bio <span style="font-size:10px;color:var(--ink3);font-weight:400">(optional)</span></label>
       <textarea class="inp" id="rBio" rows="3" placeholder="Tell the world about yourself..."></textarea>
 
       <label class="lbl">Account Type *</label>
-      <div class="type-grid">
-        <div class="type-card" data-val="personal" onclick="selType(this)">
+      <div class="type-grid" style="margin-bottom:14px">
+        <div class="type-card" data-val="personal" onclick="pickType(this)">
           <div class="type-icon">👤</div>
-          <div class="type-name" id="tPersonal">Personal</div>
-          <div class="type-desc" id="tPersonalDesc">Connect with friends, follow creators</div>
+          <div class="type-name">Personal</div>
+          <div class="type-desc">Connect with friends, follow creators</div>
         </div>
-        <div class="type-card" data-val="pro" onclick="selType(this)">
+        <div class="type-card" data-val="pro" onclick="pickType(this)">
           <div class="type-icon">⭐</div>
-          <div class="type-name" id="tPro">Professional</div>
-          <div class="type-desc" id="tProDesc">Grow followers, create servers</div>
+          <div class="type-name">Professional</div>
+          <div class="type-desc">Grow followers, create servers</div>
         </div>
       </div>
 
-      <div id="privacyDiv" style="display:none">
-        <label class="lbl">Account Privacy</label>
-        <div class="privacy-opts">
-          <button class="priv-btn on" data-val="public" onclick="selPrivacy(this)" id="privPublic">🌍 Public</button>
-          <button class="priv-btn" data-val="private" onclick="selPrivacy(this)" id="privPrivate">🔒 Private</button>
+      <div id="privDiv" style="display:none;margin-bottom:14px">
+        <label class="lbl">Privacy</label>
+        <div style="display:flex;gap:8px">
+          <button class="priv-btn on" data-val="public" onclick="pickPrivacy(this)">🌍 Public</button>
+          <button class="priv-btn" data-val="private" onclick="pickPrivacy(this)">🔒 Private</button>
         </div>
       </div>
 
-      <div style="display:flex;gap:8px;margin-top:4px">
-        <button class="btn ghost" onclick="goRegStep(1)" style="width:auto;padding:14px 20px">← Back</button>
-        <button class="btn" id="regStep2Btn" onclick="goRegStep3()" style="flex:1">Next →</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn ghost" onclick="goStep(1)" style="width:auto;padding:14px 18px">← Back</button>
+        <button class="btn" onclick="toStep3()" style="flex:1">Next →</button>
       </div>
     </div>
 
-    <!-- ── REGISTER STEP 3 ── -->
-    <div id="regStep3" style="display:none">
+    <!-- STEP 3 -->
+    <div id="step3" style="display:none">
       <div class="step-bar">
         <div class="step-dot done"></div>
         <div class="step-dot done"></div>
         <div class="step-dot active"></div>
       </div>
+      <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:18px">Interests & Info</div>
 
-      <label class="lbl">Interests <span style="color:var(--ink4);font-size:10px">(optional)</span></label>
-      <div class="interest-tags" id="interestTags"></div>
+      <label class="lbl">Interests <span style="font-size:10px;color:var(--ink3);font-weight:400">(optional)</span></label>
+      <div id="interestTags" class="interest-tags"></div>
 
-      <label class="lbl">City <span style="color:var(--ink4);font-size:10px">(optional)</span></label>
+      <label class="lbl">City <span style="font-size:10px;color:var(--ink3);font-weight:400">(optional)</span></label>
       <input class="inp" id="rCity" placeholder="e.g. New York">
 
-      <label class="lbl">School / Workplace <span style="color:var(--ink4);font-size:10px">(optional)</span></label>
-      <input class="inp" id="rWork" placeholder="e.g. Harvard University">
+      <label class="lbl">School / Workplace <span style="font-size:10px;color:var(--ink3);font-weight:400">(optional)</span></label>
+      <input class="inp" id="rWork" placeholder="e.g. Harvard, Google...">
 
-      <!-- Timeline / Biography -->
-      <label class="lbl" style="display:flex;align-items:center;justify-content:space-between">
-        Timeline <span style="color:var(--ink4);font-size:10px">(optional)</span>
-        <button class="btn sm" style="font-size:11px;padding:5px 10px" onclick="openSheet('addTimelineSheet')">+ Add</button>
-      </label>
-      <div id="timelineList" style="margin-bottom:14px"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <label class="lbl" style="margin-bottom:0">Timeline <span style="font-size:10px;color:var(--ink3);font-weight:400">(optional)</span></label>
+        <button class="btn sm" style="padding:6px 12px;font-size:12px" onclick="openSheet('tlSheet')">+ Add</button>
+      </div>
+      <div id="tlList" style="margin-bottom:16px">
+        <div style="font-size:13px;color:var(--ink4);padding:4px 0">No entries yet</div>
+      </div>
 
-      <div style="display:flex;gap:8px;margin-top:4px">
-        <button class="btn ghost" onclick="goRegStep(2)" style="width:auto;padding:14px 20px">← Back</button>
-        <button class="btn acc" id="regFinalBtn" onclick="doRegister()" style="flex:1">🚀 Create Account</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn ghost" onclick="goStep(2)" style="width:auto;padding:14px 18px">← Back</button>
+        <button class="btn acc" onclick="doRegister()" style="flex:1">🚀 Create Account</button>
       </div>
     </div>
 
   </div>
 </div>
+
 
 <!-- ════════════════════════════
      SETUP PROFILE SCREEN
@@ -746,6 +731,35 @@
 <!-- Hidden file inputs for registration -->
 <input type="file" id="regAvaFI" accept="image/*">
 <input type="file" id="regCoverFI" accept="image/*">
+
+<!-- Timeline Sheet -->
+<div class="overlay hidden" id="tlSheet">
+  <div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-head"><span class="sh-title">Add Timeline Entry</span><button class="sh-close" onclick="closeSheet('tlSheet')">×</button></div>
+    <div class="sh-body">
+      <label class="lbl">Type</label>
+      <select class="inp" id="tlType">
+        <option value="school">🎓 School</option>
+        <option value="university">🏛️ University</option>
+        <option value="work">💼 Work</option>
+        <option value="city">🏙️ City</option>
+      </select>
+      <label class="lbl">Name</label>
+      <input class="inp" id="tlName" placeholder="e.g. MIT, Google, Paris...">
+      <label class="lbl">Period</label>
+      <div style="display:flex;gap:8px">
+        <input class="inp" id="tlFrom" placeholder="From (2018)" style="flex:1;margin-bottom:14px">
+        <input class="inp" id="tlTo" placeholder="To (2022 / Present)" style="flex:1;margin-bottom:14px">
+      </div>
+      <div class="brow">
+        <button class="btn" onclick="addTL()">Add</button>
+        <button class="btn ghost" onclick="closeSheet('tlSheet')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<input type="file" id="rAvaFI" accept="image/*">
+<input type="file" id="rCoverFI" accept="image/*">
 <input type="file" id="avatarFI" accept="image/*">
 <input type="file" id="coverFI" accept="image/*">
 <input type="file" id="setupAvaFI" accept="image/*">
@@ -2065,6 +2079,255 @@ window.swAuthTab = tab => {
     document.getElementById('regStep1').style.display = 'none';
     document.getElementById('regStep2').style.display = 'none';
     document.getElementById('regStep3').style.display = 'none';
+  }
+};
+
+
+// ══════════════════════════════
+// REGISTRATION & AUTH LOGIC
+// ══════════════════════════════
+
+// ── THEME ──
+let isDark = localStorage.getItem('flow_theme') === 'dark';
+function applyTheme(){
+  document.body.classList.toggle('dark', isDark);
+  const btn = document.getElementById('themeBtn');
+  if(btn) btn.textContent = isDark ? '🌙' : '☀️';
+}
+applyTheme();
+window.toggleTheme = () => { isDark=!isDark; localStorage.setItem('flow_theme',isDark?'dark':'light'); applyTheme(); };
+
+// ── LANGUAGE ──
+window.setLang = lang => {
+  currentLang = lang;
+  const isRTL = ['ar','fa','he'].includes(lang);
+  document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+  document.body.style.fontFamily = isRTL ? "'Cairo','Inter',sans-serif" : "'Inter',sans-serif";
+  const sel = document.getElementById('langSel');
+  if(sel) sel.value = lang;
+  applyLang();
+};
+
+// ── AUTH TABS ──
+window.swTab = tab => {
+  document.getElementById('tLogin').classList.toggle('on', tab==='login');
+  document.getElementById('tReg').classList.toggle('on', tab==='reg');
+  document.getElementById('loginForm').style.display = tab==='login' ? '' : 'none';
+  if(tab==='reg'){
+    goStep(1);
+  } else {
+    ['step1','step2','step3'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.style.display = 'none';
+    });
+  }
+};
+
+// Override old swAuthTab
+window.swAuthTab = window.swTab;
+
+// ── LOGIN ──
+window.doLogin = async () => {
+  const e = document.getElementById('lEmail').value.trim();
+  const p = document.getElementById('lPass').value;
+  if(!e||!p) return toast('Enter email and password');
+  try{ await signInWithEmailAndPassword(auth,e,p); }
+  catch(err){ toast(err.code==='auth/invalid-credential'?'Wrong email or password':err.message); }
+};
+// wire login button
+const loginBtn = document.getElementById('loginBtn');
+if(loginBtn) loginBtn.onclick = doLogin;
+
+// ── CONTACT TAB ──
+window.swContact = type => {
+  document.getElementById('tabEmail').classList.toggle('on', type==='email');
+  document.getElementById('tabPhone').classList.toggle('on', type==='phone');
+  document.getElementById('emailDiv').style.display = type==='email' ? '' : 'none';
+  document.getElementById('phoneDiv').style.display = type==='phone' ? '' : 'none';
+};
+
+// ── PASSWORD STRENGTH ──
+window.showPassStr = val => {
+  const bar = document.getElementById('passBar');
+  const hint = document.getElementById('passHint');
+  if(!bar) return;
+  let score = 0;
+  if(val.length >= 8) score++;
+  if(/[A-Z]/.test(val)) score++;
+  if(/[0-9]/.test(val)) score++;
+  if(/[^A-Za-z0-9]/.test(val)) score++;
+  const colors = ['#ef4444','#f97316','#f5a623','#22c55e'];
+  const labels = ['Weak','Fair','Good','Strong ✓'];
+  bar.style.width = (score*25)+'%';
+  bar.style.background = colors[score-1]||'var(--bg3)';
+  hint.textContent = score>0 ? labels[score-1] : 'Use letters, numbers and symbols (!@#$...)';
+  hint.style.color = colors[score-1]||'var(--ink3)';
+};
+
+// ── FILL DATE SELECTS ──
+(function fillDates(){
+  const dayEl=document.getElementById('rDay');
+  const monEl=document.getElementById('rMonth');
+  const yrEl=document.getElementById('rYear');
+  if(!dayEl) return;
+  for(let d=1;d<=31;d++) dayEl.innerHTML+=`<option value="${d}">${d}</option>`;
+  ['January','February','March','April','May','June','July','August','September','October','November','December']
+    .forEach((m,i)=>monEl.innerHTML+=`<option value="${i+1}">${m}</option>`);
+  const yr=new Date().getFullYear();
+  for(let y=yr-10;y>=yr-100;y--) yrEl.innerHTML+=`<option value="${y}">${y}</option>`;
+})();
+
+// ── GENDER / TYPE / PRIVACY ──
+let rGender=null, rType=null, rPrivacy='public';
+window.pickGender = btn => {
+  document.querySelectorAll('.gender-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); rGender=btn.dataset.val;
+};
+window.pickType = card => {
+  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('on'));
+  card.classList.add('on'); rType=card.dataset.val;
+  const pd=document.getElementById('privDiv');
+  if(pd) pd.style.display = rType==='personal'?'':'none';
+};
+window.pickPrivacy = btn => {
+  document.querySelectorAll('[data-val="public"],[data-val="private"]').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); rPrivacy=btn.dataset.val;
+};
+
+// ── STEP NAVIGATION ──
+window.goStep = step => {
+  ['step1','step2','step3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display=(i+1===step)?'':'none';
+  });
+  if(step===3){ renderInterests(); renderTimeline(); }
+};
+
+window.toStep2 = () => {
+  const email=document.getElementById('rEmail').value.trim();
+  const pass=document.getElementById('rPass').value;
+  const first=document.getElementById('rFirst').value.trim();
+  const last=document.getElementById('rLast').value.trim();
+  const day=document.getElementById('rDay').value;
+  const mon=document.getElementById('rMonth').value;
+  const yr=document.getElementById('rYear').value;
+  if(!first||!last) return toast('First and last name are required');
+  if(!pass||pass.length<8) return toast('Password must be at least 8 characters');
+  if(!/[0-9]/.test(pass)) return toast('Password must include numbers');
+  if(!/[^A-Za-z0-9]/.test(pass)) return toast('Password must include symbols (!@#$...)');
+  if(!day||!mon||!yr) return toast('Date of birth is required');
+  if(!rGender) return toast('Please select your gender');
+  goStep(2);
+};
+
+window.toStep3 = () => {
+  if(!rType) return toast('Please select account type');
+  goStep(3);
+};
+
+// ── AVATAR & COVER ──
+let rAvaFile=null, rCoverFile=null;
+document.getElementById('rAvaFI').addEventListener('change',e=>{
+  rAvaFile=e.target.files[0];
+  if(rAvaFile){
+    const el=document.getElementById('avaPick');
+    el.innerHTML=`<img src="${URL.createObjectURL(rAvaFile)}" style="width:100%;height:100%;object-fit:cover;border-radius:17px">`;
+  }
+});
+document.getElementById('rCoverFI').addEventListener('change',e=>{
+  rCoverFile=e.target.files[0];
+  if(rCoverFile){
+    const cp=document.getElementById('coverPick');
+    const old=cp.querySelector('img'); if(old)old.remove();
+    const img=new Image(); img.src=URL.createObjectURL(rCoverFile);
+    img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+    cp.insertBefore(img,cp.firstChild);
+  }
+});
+
+// ── INTERESTS ──
+const TAGS=['#Gaming','#Music','#Art','#Photography','#Travel','#Food','#Sports','#Tech','#Science','#Movies','#Books','#Fashion','#Fitness','#Nature','#Coding','#Design','#Business','#Education','#Health','#Politics','#Comedy','#Anime','#Cars','#Cooking','#Finance'];
+let rInterests=[];
+function renderInterests(){
+  const el=document.getElementById('interestTags');
+  if(!el)return;
+  el.innerHTML='';
+  TAGS.forEach(tag=>{
+    const btn=document.createElement('button');
+    btn.className='itag'+(rInterests.includes(tag)?' on':'');
+    btn.textContent=tag;
+    btn.onclick=()=>{
+      if(rInterests.includes(tag)) rInterests=rInterests.filter(t=>t!==tag);
+      else rInterests.push(tag);
+      btn.classList.toggle('on',rInterests.includes(tag));
+    };
+    el.appendChild(btn);
+  });
+}
+
+// ── TIMELINE ──
+let rTimeline=[];
+const TL_IC={school:'🎓',university:'🏛️',work:'💼',city:'🏙️'};
+function renderTimeline(){
+  const el=document.getElementById('tlList');
+  if(!el)return;
+  if(!rTimeline.length){el.innerHTML='<div style="font-size:13px;color:var(--ink4);padding:4px 0">No entries yet</div>';return;}
+  el.innerHTML='';
+  rTimeline.forEach((entry,i)=>{
+    const div=document.createElement('div');
+    div.className='timeline-item';
+    div.innerHTML=`<div class="tl-icon">${TL_IC[entry.type]||'📍'}</div><div class="tl-info"><div class="tl-title">${esc(entry.name)}</div><div class="tl-sub">${esc(entry.from||'')}${entry.to?' – '+esc(entry.to):''}</div></div><button class="tl-del" onclick="removeTL(${i})">×</button>`;
+    el.appendChild(div);
+  });
+}
+window.removeTL = i => { rTimeline.splice(i,1); renderTimeline(); };
+window.addTL = () => {
+  const type=document.getElementById('tlType').value;
+  const name=document.getElementById('tlName').value.trim();
+  const from=document.getElementById('tlFrom').value.trim();
+  const to=document.getElementById('tlTo').value.trim();
+  if(!name)return toast('Enter a name');
+  rTimeline.push({type,name,from,to});
+  document.getElementById('tlName').value='';
+  document.getElementById('tlFrom').value='';
+  document.getElementById('tlTo').value='';
+  renderTimeline();
+  closeSheet('tlSheet');
+};
+
+// ── DO REGISTER ──
+window.doRegister = async () => {
+  const email=document.getElementById('rEmail').value.trim();
+  const pass=document.getElementById('rPass').value;
+  const first=document.getElementById('rFirst').value.trim();
+  const last=document.getElementById('rLast').value.trim();
+  const username=document.getElementById('rUser').value.trim()||(first+' '+last);
+  const bio=document.getElementById('rBio').value.trim();
+  const day=document.getElementById('rDay').value;
+  const mon=document.getElementById('rMonth').value;
+  const yr=document.getElementById('rYear').value;
+  const city=document.getElementById('rCity').value.trim();
+  const work=document.getElementById('rWork').value.trim();
+  if(!email)return toast('Email is required');
+  toast('Creating account...');
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email,pass);
+    let photoURL='',coverURL='';
+    if(rAvaFile) photoURL=await upload(rAvaFile,`avatars/${cred.user.uid}`);
+    if(rCoverFile) coverURL=await upload(rCoverFile,`covers/${cred.user.uid}`);
+    await updateProfile(cred.user,{displayName:username,photoURL});
+    await setDoc(doc(db,'users',cred.user.uid),{
+      name:username,firstName:first,lastName:last,username,email,bio,
+      gender:rGender,accountType:rType||'personal',privacy:rPrivacy,
+      photoURL,coverURL,
+      dob:`${yr}-${String(mon).padStart(2,'0')}-${String(day).padStart(2,'0')}`,
+      city,work,interests:rInterests,timeline:rTimeline,
+      followers:0,following:0,posts:0,createdAt:serverTimestamp()
+    });
+    toast('Welcome to Flow! 🎉');
+  }catch(e){
+    toast(e.code==='auth/email-already-in-use'?'Email already used':e.message);
   }
 };
 
